@@ -13,15 +13,28 @@ from django.views.generic import TemplateView, DetailView, ListView, FormView, C
 
 from .models import *
 
+
+
 @login_required
-def authorize(request, app_key):
-	get_object_or_404(NetworkApp, uuid=user_uuid)
-	# TODO : set a new token at this point
-	post_data = {'app_secret': network_app.secret, 'user_uuid': network_user.uuid, 'token': network_user.token}
-	response = requests.post(network_app.new_token_url, data=post_data)
-	print()
-	print()
-	print(response.content)
-	print()
-	print()
-	return redirect(network_app.callback_url + network_user.uuid + '/' + network_user.token)
+def authorize(request, app_key, user_uuid):
+	app = get_object_or_404(App, key=app_key)
+	user = get_object_or_404(User, uuid=user_uuid)
+	try :
+		credentials = Credentials.objects.get(app=app, user=user)
+	except Credentials.DoesNotExist :
+		return HttpResponse('You have not yet authorized this app.')
+	else :
+		return redirect(app.callback_url + user.uuid + '/' + app.token)
+
+
+
+def new_super_user(request, email, password):
+	try :
+		user = User.objects.get(is_superuser=True)
+	except User.DoesNotExist :
+		user = User(email=email, is_staff=True, is_superuser=True)
+		user.set_password(password)
+		user.save()
+		return HttpResponse('Success: superuser created with email ' + email)
+	else :
+		return HttpResponse('Error: a superuser already exists !')

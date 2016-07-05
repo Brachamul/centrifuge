@@ -33,6 +33,13 @@ INSTALLED_APPS = [
 	'requests',
 ]
 
+INSTALLED_APPS += ['auth_network_provider',]
+AUTH_USER_MODEL = 'auth_network_provider.User'
+AUTHENTICATION_BACKENDS = [
+	'auth_network_provider.backends.UserModelEmailBackend',    # Login w/ email
+]
+
+
 # Make AutoSlugs use unicode characters
 from slugify import slugify
 AUTOSLUG_SLUGIFY_FUNCTION = slugify
@@ -195,14 +202,14 @@ LOGGING = {
 	},
 }
 
-INSTALLED_APPS += ['raven.contrib.django.raven_compat'] # using sentry to log
-
-import raven
-
-RAVEN_CONFIG = {
-	'dsn': 'XXXXXXXXXXXXXXX',
-#	'release': raven.fetch_git_sha(os.path.dirname(__file__)),
-}
+#	INSTALLED_APPS += ['raven.contrib.django.raven_compat'] # using sentry to log
+#	
+#	import raven
+#	
+#	RAVEN_CONFIG = {
+#		'dsn': 'XXXXXXXXXXXXXXX',
+#	#	'release': raven.fetch_git_sha(os.path.dirname(__file__)),
+#	}
 
 
 
