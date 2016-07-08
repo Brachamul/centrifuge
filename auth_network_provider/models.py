@@ -9,6 +9,7 @@ from django.utils.translation import gettext as _
 class App(models.Model):
 	key = models.UUIDField(primary_key=True, max_length=32, default=uuid.uuid4, editable=False)
 	name = models.CharField(max_length=255)
+	trusted = models.BooleanField(default=False) # a trusted app does not need to be authorized by the user
 	secret = models.CharField(max_length=32, default=uuid.uuid4, editable=False)
 	new_token_url = models.CharField(max_length=5000)
 	callback_url = models.CharField(max_length=5000)
@@ -19,7 +20,7 @@ class App(models.Model):
 
 class User(AbstractBaseUser, PermissionsMixin):
 
-	uuid = models.UUIDField(max_length=32, default=uuid.uuid4,)
+	uuid = models.UUIDField(max_length=32, default=uuid.uuid4)
 	
 	apps = models.ManyToManyField(App, through='Credentials')
 	
