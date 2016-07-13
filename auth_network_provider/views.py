@@ -51,7 +51,9 @@ def BackToClientApp(request, app, user):
 		Let's set the token on the client app with a POST request
 		So that the client app can recognize our browser request '''
 	token = str(uuid.uuid4())
-	requests.post(app.new_token_url + '/' + str(user.uuid) + '/' + token + '/' + app.secret)
+	setTokenUrl = app.new_token_url + '/' + str(user.uuid) + '/' + token + '/' + app.secret + '/'
+	requests.get(app.new_token_url + '/' + str(user.uuid) + '/' + token + '/' + app.secret + '/')
+	# TODO : change the previous request to a "POST"
 	return redirect(app.callback_url + '/' + str(user.uuid) + '/' + token)
 
 
