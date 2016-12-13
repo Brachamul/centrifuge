@@ -11,8 +11,8 @@ class App(models.Model):
 	name = models.CharField(max_length=255)
 	trusted = models.BooleanField(default=False) # a trusted app does not need to be authorized by the user
 	secret = models.CharField(max_length=32, default=uuid.uuid4, editable=False)
-	set_token_url = models.CharField(max_length=5000)
-	callback_url = models.CharField(max_length=5000)
+	set_token_url = models.CharField(max_length=5000, help_text='eg: http://localhost:8008/auth/set-token/')
+	callback_url = models.CharField(max_length=5000, help_text='eg: http://localhost:8008/auth/callback/')
 	def __str__(self): return self.name
 
 
