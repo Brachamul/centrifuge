@@ -11,8 +11,8 @@ class App(models.Model):
 	name = models.CharField(max_length=255)
 	trusted = models.BooleanField(default=False) # a trusted app does not need to be authorized by the user
 	secret = models.CharField(max_length=32, default=uuid.uuid4, editable=False)
-	new_token_url = models.CharField(max_length=5000)
-	callback_url = models.CharField(max_length=5000)
+	set_token_url = models.CharField(max_length=5000, help_text='http://localhost:8008/set-token/')
+	callback_url = models.CharField(max_length=5000, help_text='http://localhost:8008/callback/')
 	def __str__(self): return self.name
 
 
@@ -23,6 +23,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 	uuid = models.UUIDField(max_length=32, default=uuid.uuid4)
 	
 	apps = models.ManyToManyField(App, through='Credentials')
+
+	username = models.CharField(max_length=32, blank=True, null=True)
+	# TODO : this is useless because we're using the email as logging, but the createsuperuser() function
+	# doesn't work without it... here is the error message :
+	# TypeError: create_superuser() missing 1 required positional argument: 'username'
 	
 	email = models.EmailField(
 		_('Email'), unique=True,
@@ -49,7 +54,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 	objects = UserManager()
 	
 	USERNAME_FIELD = 'email'
-	REQUIRED_FIELDS = ['name',]
+	REQUIRED_FIELDS = ['name', 'username']
 	
 	class Meta(object):
 		verbose_name = _('User')

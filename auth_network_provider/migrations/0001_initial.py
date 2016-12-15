@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
                 ('key', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=255)),
                 ('secret', models.CharField(default=uuid.uuid4, editable=False, max_length=32)),
-                ('new_token_url', models.CharField(max_length=5000)),
+                ('set_token_url', models.CharField(max_length=5000)),
                 ('callback_url', models.CharField(max_length=5000)),
             ],
         ),
