@@ -39,11 +39,6 @@ AUTHENTICATION_BACKENDS = [
 	'auth_network_provider.backends.UserModelEmailBackend',    # Login w/ email
 ]
 
-
-# Make AutoSlugs use unicode characters
-from slugify import slugify
-AUTOSLUG_SLUGIFY_FUNCTION = slugify
-
 MIDDLEWARE_CLASSES = [
 	'django.middleware.security.SecurityMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
