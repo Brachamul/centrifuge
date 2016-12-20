@@ -2,6 +2,7 @@ import logging
 import requests
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -28,7 +29,10 @@ def Identify(request, app_key):
 		else :
 			return AskUserToAllowApp(request, app, user)
 	else :
-		return BackToClientApp(request, app=app, user=user)
+		if app.trusted or credentials.user_has_authorized :
+			return BackToClientApp(request, app=app, user=user)
+		else :
+			return AskUserToAllowApp(request, app, user)
 
 
 def AskUserToAllowApp(request, app, user):
@@ -75,3 +79,55 @@ def NewSuperUser(request, email, password):
 		return HttpResponse('Success: superuser created with email ' + email)
 	else :
 		return HttpResponse('Error: a superuser already exists !')
+
+
+
+class Register(CreateView):
+
+	''' C'est la vue qui permet aux utilisateurs de créer un compte '''
+
+	model = User
+	template_name = 'form.html'
+	fields = ['name', 'email', 'password']
+
+
+	def get_context_data(self, **kwargs):
+		context = super(Register, self).get_context_data(**kwargs)
+		context['form_title'] = 'Créer un compte'
+		context['submit_button_text'] = 'Créer'
+		return context
+
+
+	def get_success_url(self):
+
+		''' Si la création de compte intervient alors que l'utilisateur
+		souhaitait se connecter à l'une des applications de la base,
+		on le redirige vers le parcours d'identification correspondant. '''
+
+		if 'app_key' in self.kwargs :
+			print('=============')
+			print('APP KEY : ' + self.kwargs['app_key'])
+			return redirect('network_auth_identify', app_key=self.kwargs['app_key'])
+		else :
+			return redirect('/')
+
+
+	def form_valid(self, form):
+
+		''' On override la validation afin d'automatiquement
+		logger l'utilisateur après sa création de compte '''
+
+		# d'abord, on créé le nouvel utilisateur
+		form.save()
+
+		# ensuite, on récupère les données du formulaire
+		email = self.request.POST['email']
+		password = self.request.POST['password']
+
+		# enfin, on l'authentifie et on le connecte
+		user = authenticate(username=email, password=password)
+		print('=============')
+		print(user.name)
+		print('=============')
+		login(self.request, user)
+		return super(Register, self).form_valid(form)

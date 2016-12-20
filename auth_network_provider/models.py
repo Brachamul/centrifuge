@@ -14,6 +14,9 @@ class App(models.Model):
 	set_token_url = models.CharField(max_length=5000, help_text='eg: http://localhost:8008/auth/set-token/')
 	callback_url = models.CharField(max_length=5000, help_text='eg: http://localhost:8008/auth/callback/')
 	def __str__(self): return self.name
+	class Meta :
+		verbose_name = 'application'
+		verbose_name_plural = 'applications'
 
 
 # http://stackoverflow.com/questions/35528074/django-is-extending-abstractbaseuser-required-to-use-email-as-username-field
@@ -36,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 		}
 	)
 	name = models.CharField(
-		_('Prénom et Nom'), default='An Onymous', max_length=255, blank=True, null=True
+		_('Prénom et Nom'), max_length=255, blank=True, null=True
 	)
 	is_staff = models.BooleanField(
 		_('Staff Status'), default=False,
@@ -55,10 +58,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 	
 	USERNAME_FIELD = 'email'
 	REQUIRED_FIELDS = ['name', 'username']
+
+	def number_of_apps(self):
+		return self.apps.count()
 	
 	class Meta(object):
-		verbose_name = _('User')
-		verbose_name_plural = _('Users')
+		verbose_name = _('user')
+		verbose_name_plural = _('users')
 		abstract = False
 	
 	def get_full_name(self):
@@ -80,6 +86,7 @@ class Credentials(models.Model):
 	''' Contains the token used to authenticate the user to the app '''
 	app = models.ForeignKey(App, on_delete=models.CASCADE)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	user_has_authorized = models.BooleanField(default=False)
 	token = models.CharField(max_length=32, default=uuid.uuid4)
 	date_joined = models.DateField(auto_now_add=True)
 
@@ -88,6 +95,6 @@ class Credentials(models.Model):
 		self.save()
 
 	class Meta(object):
-		verbose_name = _('Credentials')
-		verbose_name_plural = _('Credentials')
+		verbose_name = _('credential')
+		verbose_name_plural = _('credentials')
 
