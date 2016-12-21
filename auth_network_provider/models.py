@@ -13,7 +13,7 @@ class App(models.Model):
 	secret = models.CharField(max_length=32, default=uuid.uuid4, editable=False)
 	set_token_url = models.CharField(max_length=5000, help_text='eg: http://localhost:8008/auth/set-token/')
 	callback_url = models.CharField(max_length=5000, help_text='eg: http://localhost:8008/auth/callback/')
-	def __str__(self): return self.name
+	def __str__(self): return str(self.name)
 	class Meta :
 		verbose_name = 'application'
 		verbose_name_plural = 'applications'
@@ -39,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 		}
 	)
 	name = models.CharField(
-		_('Prénom et Nom'), max_length=255, blank=True, null=True
+		_('Prénom et Nom'), max_length=255,
 	)
 	is_staff = models.BooleanField(
 		_('Staff Status'), default=False,
@@ -74,7 +74,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 		return self.name
 	
 	def __str__(self):
-		return self.name
+		return str(self.name)
 	
 	def email_user(self, subject, message, from_email=None, **kwargs):
 		""" Sends an email to this User. """

@@ -14,6 +14,7 @@ from django.views.generic import TemplateView, DetailView, ListView, FormView, C
 
 from .models import *
 
+logger = logging.getLogger(__name__)
 
 
 @login_required
@@ -117,17 +118,28 @@ class Register(CreateView):
 		''' On override la validation afin d'automatiquement
 		logger l'utilisateur après sa création de compte '''
 
-		# d'abord, on créé le nouvel utilisateur
-		form.save()
-
-		# ensuite, on récupère les données du formulaire
+		# d'abord, on récupère les données du formulaire
 		email = self.request.POST['email']
-		password = self.request.POST['password']
+		password = self.request.POST['password1']
+
+		logger.error('Something went wrong!')
+		print('=============')
+		print('Something went wrong !')
+		print('=============')
+
+		# ensuite, on créé le nouvel utilisateur
+		user = User.objects.create_user(email=email, password=password)
+
+		messages.info(request, 'USER : ' + user)
+
+		print('=============')
+		print('USER : ' + user)
+		print('=============')
 
 		# enfin, on l'authentifie et on le connecte
-		user = authenticate(username=email, password=password)
-		print('=============')
-		print(user.name)
-		print('=============')
-		login(self.request, user)
+#		user = authenticate(username=email, password=password)
+#		print('=============')
+#		print(user.name)
+#		print('=============')
+#		login(self.request, user)'''
 		return super(Register, self).form_valid(form)
