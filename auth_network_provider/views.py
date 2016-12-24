@@ -17,6 +17,10 @@ from .models import *
 logger = logging.getLogger(__name__)
 
 
+def Home(request): return render(request, 'auth_network_provider/home.html')
+
+
+
 @login_required
 def Identify(request, app_key):
 	''' Now that the user is logged in, let's find out what app he's asking access to '''
@@ -26,47 +30,51 @@ def Identify(request, app_key):
 		credentials = Credentials.objects.get(app=app, user=user)
 	except Credentials.DoesNotExist :
 		if app.trusted :
-			return AddAppToUserProfile(request, app, user)
+			return AddAppToUserProfile(request, app)
 		else :
-			return AskUserToAllowApp(request, app, user)
+			return AskUserToAllowApp(request, app)
 	else :
 		if app.trusted or credentials.user_has_authorized :
-			return BackToClientApp(request, app=app, user=user)
+			return BackToClientApp(request, app)
 		else :
-			return AskUserToAllowApp(request, app, user)
+			return AskUserToAllowApp(request, app)
 
 
-def AskUserToAllowApp(request, app, user):
+@login_required
+def AskUserToAllowApp(request, app):
 	''' This occurs if app is not 'trusted' by default '''
-	# TODO : build this feature :p
-	return HttpResponse("Cette appli n'est pas encore validée.")
+	return render(request, 'auth_network_provider/authorize.html', {
+		'app': app,
+		'page_title': "Autoriser une application",
+		} )
 #	return AddAppToUserProfile(request, app, user)
 #	return render(request, 'auth_network_provider/allow.html', {'page_title': "Autoriser une application"})
 
 
-def AddAppToUserProfile(request, app, user):
+@login_required
+def AddAppToUserProfile(request, app):
 	''' Credentials are built to link the user with the app '''
-	new_credentials = Credentials(user=user, app=app)
+	new_credentials = Credentials(app=app, user=request.user)
 	new_credentials.save()
-	return BackToClientApp(request, app=app, user=user)
+	return BackToClientApp(request, app=app, user=request.user)
 
 
-def BackToClientApp(request, app, user):
+@login_required
+def BackToClientApp(request, app):
 	''' We've done all we need and can go back to the client app
 		Let's set the token on the client app with a POST request
 		So that the client app can recognize our browser request '''
 	token = str(uuid.uuid4())
-	requests.post(app.set_token_url + str(user.uuid) + '/' + token + '/' + app.secret + '/')
-	return redirect(app.callback_url + str(user.uuid) + '/' + token + '/')
+	requests.post(app.set_token_url + str(request.user.uuid) + '/' + token + '/' + app.secret + '/')
+	return redirect(app.callback_url + str(request.user.uuid) + '/' + token + '/')
 
 
-
+# Secret instead of login_required
 def GetDetails(request, app_key, app_secret, user_uuid):
 	''' An app wants to create an account for a user and needs their details '''
 	app = get_object_or_404(App, key=app_key, secret=app_secret) # identifie l'appli grâce à l'URL
 	user = get_object_or_404(User, uuid=user_uuid)
 	return JsonResponse({'username': user.name, 'email': user.email})
-
 
 
 # Only when first installing the network
@@ -80,7 +88,6 @@ def NewSuperUser(request, email, password):
 		return HttpResponse('Success: superuser created with email ' + email)
 	else :
 		return HttpResponse('Error: a superuser already exists !')
-
 
 
 class Register(CreateView):
@@ -122,21 +129,13 @@ class Register(CreateView):
 		email = self.request.POST['email']
 		password = self.request.POST['password1']
 
-		logger.error('Something went wrong!')
-		print('=============')
-		print('Something went wrong !')
-		print('=============')
-
 		# ensuite, on créé le nouvel utilisateur
 		user = User.objects.create_user(email=email, password=password)
 
 		messages.info(request, 'USER : ' + user)
 
-		print('=============')
-		print('USER : ' + user)
-		print('=============')
-
 		# enfin, on l'authentifie et on le connecte
+		# TODO
 #		user = authenticate(username=email, password=password)
 #		print('=============')
 #		print(user.name)

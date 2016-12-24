@@ -7,6 +7,7 @@ from registration.backends.simple.views import RegistrationView
 from .forms import CustomUserRegistrationForm
 
 urlpatterns = [
+	url(r'^$', views.Home, name='network_auth_home'),
 	url(r'^identify/(?P<app_key>[\x00-\x7F]+)/$', views.Identify, name='network_auth_identify'),
 	url(r'^register/', include([
 		url(r'^$', RegistrationView.as_view(form_class=CustomUserRegistrationForm), name='registration_register'),

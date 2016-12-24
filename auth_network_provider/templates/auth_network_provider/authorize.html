@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="
+	col-xs-12
+	col-sm-10 col-sm-offset-1
+	col-md-8 col-md-offset-2
+	col-lg-6 col-lg-offset-3
+	">
+	<h1>Autoriser une application</h1>
+	<p>Application : <strong>{{ app.name }}</strong></p>
+	<p>Souhaitez-vous autoriser cette application ?</p>
+	<p><form action="" method="POST">{% csrf_token %}<a class="btn btn-block btn-primary">Autoriser</a></form></p>
+	<p><a class="btn btn-block btn-default" href="/">Annuler</a></p>
+</div>
+
+{% endblock %}
