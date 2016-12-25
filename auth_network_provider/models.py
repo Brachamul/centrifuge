@@ -27,37 +27,42 @@ class User(AbstractBaseUser, PermissionsMixin):
 	
 	apps = models.ManyToManyField(App, through='Credentials')
 
-	username = models.CharField(max_length=32, blank=True, null=True)
-	# TODO : this is useless because we're using the email as logging, but the createsuperuser() function
-	# doesn't work without it... here is the error message :
-	# TypeError: create_superuser() missing 1 required positional argument: 'username'
-	
+	username = models.CharField(
+		# L'authentification a lieu avec l'email, mais on note tout de même le nom et prénom des gens
+		# On réutilise "username" pour ça
+		_('Prénom et Nom'),
+		max_length=255,
+		unique=False,
+		help_text=_("Votre prénom et votre nom d'usage."),
+	)
+
 	email = models.EmailField(
 		_('Email'), unique=True,
 		error_messages={
-			'unique': _("A user with that email already exists."),
+			'unique': _("Un compte associé à cette adresse mail existe déjà."),
 		}
 	)
-	name = models.CharField(
-		_('Prénom et Nom'), max_length=255,
-	)
-	is_staff = models.BooleanField(
-		_('Staff Status'), default=False,
-		help_text=_('Designates whether the user can log into this admin '
-					'site.')
-	)
-	is_active = models.BooleanField(
-		_('Active'), default=True,
-		help_text=_('Designates whether this user should be treated as '
-					'active. Unselect this instead of deleting accounts.')
-	)
+
+    is_staff = models.BooleanField(
+        _('staff status'),
+        default=False,
+        help_text=_('Designates whether the user can log into this admin site.'),
+    )
+    is_active = models.BooleanField(
+        _('active'),
+        default=True,
+        help_text=_(
+            'Designates whether this user should be treated as active. '
+            'Unselect this instead of deleting accounts.'
+        ),
+    )
 	
-	date_joined = models.DateTimeField(_('Date Joined'), auto_now_add=True)
+	date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 	
 	objects = UserManager()
 	
 	USERNAME_FIELD = 'email'
-	REQUIRED_FIELDS = ['name', 'username']
+	REQUIRED_FIELDS = ['username',]
 
 	def number_of_apps(self):
 		return self.apps.count()
@@ -68,13 +73,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 		abstract = False
 	
 	def get_full_name(self):
-		return self.name
+		return str(self.username)
 	
 	def get_short_name(self):
-		return self.name
+		return get_full_name(self)
 	
 	def __str__(self):
-		return str(self.name)
+		return get_full_name(self)
 	
 	def email_user(self, subject, message, from_email=None, **kwargs):
 		""" Sends an email to this User. """

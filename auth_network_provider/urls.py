@@ -2,17 +2,20 @@ from django.conf.urls import url, include
 
 from . import views
 
-# This is for Django-Registration
-from registration.backends.simple.views import RegistrationView
-from .forms import CustomUserRegistrationForm
+APP_KEY = r'(?P<app_key>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})' # UUID
+APP_SECRET = r'(?P<app_secret>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})' # UUID
+USER_UUID = r'(?P<user_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})' # UUID
 
 urlpatterns = [
 	url(r'^$', views.Home, name='network_auth_home'),
-	url(r'^identify/(?P<app_key>[\x00-\x7F]+)/$', views.Identify, name='network_auth_identify'),
+	url(r'^identify/{}/$'.format(APP_KEY), views.Identify, name='network_auth_identify'),
 	url(r'^register/', include([
-		url(r'^$', RegistrationView.as_view(form_class=CustomUserRegistrationForm), name='registration_register'),
-		url(r'^(?P<app_key>[\x00-\x7F]+)/$', views.Register.as_view(), name='network_auth_register_for_app'),
+		url(r'^$', views.Register.as_view(), name='registration_register'),
+		url(r'^{}/$'.format(APP_KEY), views.RegisterForApp.as_view(), name='network_auth_register_for_app'),
 	])),
-	url(r'^get-details/(?P<app_key>[\x00-\x7F]+)/(?P<app_secret>[\x00-\x7F]+)/(?P<user_uuid>[\x00-\x7F]+)/$', views.GetDetails, name='network_auth_get_details'),
-	url(r'^new-super-user/(?P<email>[\x00-\x7F]+)/(?P<password>[\x00-\x7F]+)/$', views.NewSuperUser, name='network_auth_new_super_user'),
+	url(r'^get-details/{APP_KEY}/{APP_SECRET}/{USER_UUID}/$'.format(
+		APP_KEY = APP_KEY,
+		APP_SECRET = APP_SECRET,
+		USER_UUID = USER_UUID,
+		), views.GetDetails, name='network_auth_get_details'),
 ]

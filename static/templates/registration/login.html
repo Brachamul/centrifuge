@@ -3,12 +3,7 @@
 
 {% block content %}
 
-<form action="" method="post" enctype="multipart/form-data" class="
-	col-xs-12
-	col-sm-10 col-sm-offset-1
-	col-md-8 col-md-offset-2
-	col-lg-6 col-lg-offset-3
-	">
+<form action="" method="post" enctype="multipart/form-data">
 	<h1>Connexion</h1>	
 	{% csrf_token %}
 	{% bootstrap_form form %}
@@ -21,9 +16,7 @@
 	{% endbuttons %}
 </form>
 
-<div class="col-xs-12">
-	<p style="text-align: center; font-size: .8em;"><a href="{% url 'password_reset' %}">Mot de passe oublié ?</a></p>
-	<p style="text-align: center; font-size: .8em;"><a href="{% url 'registration_register' %}">Créer un compte</a></p>
-</div>
+<p style="text-align: center; font-size: .8em;"><a href="{% url 'password_reset' %}">Mot de passe oublié ?</a></p>
+<p style="text-align: center; font-size: .8em;"><a href="{% url 'registration_register' %}">Créer un compte</a></p>
 
 {% endblock %}

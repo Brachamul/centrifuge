@@ -13,11 +13,12 @@ from django.template import RequestContext
 from django.views.generic import TemplateView, DetailView, ListView, FormView, CreateView
 
 from .models import *
+from .forms import UserCreationForm
 
 logger = logging.getLogger(__name__)
 
 
-def Home(request): return render(request, 'auth_network_provider/home.html')
+def Home(request): return render(request, 'auth_network_provider/home.html', { 'page_title': 'Accueil' })
 
 
 
@@ -77,68 +78,38 @@ def GetDetails(request, app_key, app_secret, user_uuid):
 	return JsonResponse({'username': user.name, 'email': user.email})
 
 
-# Only when first installing the network
-def NewSuperUser(request, email, password):
-	try :
-		user = User.objects.get(is_superuser=True)
-	except User.DoesNotExist :
-		user = User(email=email, is_staff=True, is_superuser=True)
-		user.set_password(password)
-		user.save()
-		return HttpResponse('Success: superuser created with email ' + email)
-	else :
-		return HttpResponse('Error: a superuser already exists !')
 
-
-class Register(CreateView):
+class Register(FormView):
 
 	''' C'est la vue qui permet aux utilisateurs de créer un compte '''
-
-	model = User
-	template_name = 'form.html'
-	fields = ['name', 'email', 'password']
-
+	form_class = UserCreationForm
+	template_name = "form.html"
+	success_url = "/"
 
 	def get_context_data(self, **kwargs):
 		context = super(Register, self).get_context_data(**kwargs)
-		context['form_title'] = 'Créer un compte'
+		context['page_title'] = 'Créer un compte'
 		context['submit_button_text'] = 'Créer'
 		return context
 
+	def form_valid(self, form):
+		form.save()
+		messages.success(self.request, 'Félicitations, {}, votre compte a bien été créé !'.format(self.request.POST.get('username')))
+		user = authenticate(email=self.request.POST.get('email'), password=self.request.POST.get('password1'))
+		print('USER :' + user)
+		if user is not None :
+			login(self.request, user)
+		return super(Register, self).form_valid(form)
+
+
+class RegisterForApp(Register):
 
 	def get_success_url(self):
 
 		''' Si la création de compte intervient alors que l'utilisateur
 		souhaitait se connecter à l'une des applications de la base,
 		on le redirige vers le parcours d'identification correspondant. '''
-
 		if 'app_key' in self.kwargs :
-			print('=============')
-			print('APP KEY : ' + self.kwargs['app_key'])
 			return redirect('network_auth_identify', app_key=self.kwargs['app_key'])
 		else :
 			return redirect('/')
-
-
-	def form_valid(self, form):
-
-		''' On override la validation afin d'automatiquement
-		logger l'utilisateur après sa création de compte '''
-
-		# d'abord, on récupère les données du formulaire
-		email = self.request.POST['email']
-		password = self.request.POST['password1']
-
-		# ensuite, on créé le nouvel utilisateur
-		user = User.objects.create_user(email=email, password=password)
-
-		messages.info(request, 'USER : ' + user)
-
-		# enfin, on l'authentifie et on le connecte
-		# TODO
-#		user = authenticate(username=email, password=password)
-#		print('=============')
-#		print(user.name)
-#		print('=============')
-#		login(self.request, user)'''
-		return super(Register, self).form_valid(form)

@@ -15,8 +15,8 @@ admin.site.register(App, AppAdmin)
 
 class UserAdmin(admin.ModelAdmin):
 	model = User
-	readonly_fields = ( "password", "last_login", "date_joined", )
-	list_display = ("name", "email", "number_of_apps")
+	readonly_fields = ( "uuid", "password", "last_login", "date_joined", )
+	list_display = ("username", "email", "number_of_apps")
 
 admin.site.register(User, UserAdmin)
 

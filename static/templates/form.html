@@ -3,13 +3,8 @@
 
 {% block content %}
 
-<form action="" method="post" enctype="multipart/form-data" class="
-	col-xs-12
-	col-sm-8 col-sm-offset-2
-	col-md-6 col-md-offset-3
-	col-lg-4 col-lg-offset-4
-	">
-	<h1>{{ form_title }}</h1>	
+<form action="" method="post" enctype="multipart/form-data">
+	<h1>{{ page_title }}</h1>	
 	{% csrf_token %}
 	{% bootstrap_form form %}
 	<hr>
@@ -20,8 +15,13 @@
 	{% endbuttons %}
 </form>
 
-<script>
-	document.getElementById("id_password").setAttribute("type", "password")
-</script>
+{% endblock %}
 
+{% block scripts %}{{ block.super }}
+<script>
+	$('.has-error').removeClass('has-error').addClass('has-danger')
+	$('.has-success').removeClass('has-success')
+	$('.control-label').removeClass('control-label').addClass('form-control-label')
+	$('.help-block').removeClass('help-block').addClass('form-control-feedback')
+</script>
 {% endblock %}

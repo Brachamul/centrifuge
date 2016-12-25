@@ -1,3 +1,7 @@
+SITE_URL = "localhost:8007" # use http:// in production
+ALLOWED_HOSTS = [SITE_URL, ]
+SECRET_KEY = 'many_potatoes'
+DEBUG = True
 LOGGING = {
 	'version': 1,
 	'disable_existing_loggers': False,
