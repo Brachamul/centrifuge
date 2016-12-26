@@ -1,12 +1,16 @@
+{% load staticfiles %}
+
 <a class="nav-item" href='/'>
-	<span class="centrifuge-brand"><i class="fa fa-retweet fa-lg"></i> centrifuge</span>
+	<span class="centrifuge-brand">centrifuge</span>
 </a>
 
 {% if user.is_authenticated %}
-	{{ user.username }}
+	<a class="nav-item" href="{% url 'auth_network_user_info' %}">{{ user.username }}</a>
+	<a class="nav-item" href="{% url 'logout' %}">Déconnexion</a>
 {% else %}
-	<a class="nav-item" href="{% url 'login' %}">Connexion</a>
+	<a class="nav-item" href="{% url 'auth_network_login' %}">Connexion</a>
 {% endif %}
+
 
 <style>
 
@@ -14,18 +18,50 @@ header {
 	background-color: #222; color: white;
 	height: 5rem ; /* 80px */
 	margin-bottom: 2rem; padding: 0 .5rem;
-	display: flex;
+	display: flex; flex-flow: row wrap;
 	box-shadow : 0px 0px 4px 2px rgba(0,0,0,.5);
 }
 
-.nav-item { color: inherit; padding: 1rem; display: inline-block; opacity: .8; transition: .25s all; height: 100%; line-height: 2.8rem; }
-a.nav-item:hover, a.nav-item:focus {
-	color: inherit; text-decoration: none; opacity: 1;  text-shadow: 1px 1px 5px #000;
-	padding-bottom: .75rem;
-	border-bottom-width: .25rem;
-	border-bottom-style: solid;
-	}
+.nav-item {
+	display: block; position: relative; 
+	padding: 1rem; height: 100%; line-height: 3rem;
+	color: inherit;
+}
 
-.centrifuge-brand { font-size: 2em; color: #ff6000; position: relative; top: -.1em; }
+.nav-item::after {
+	display: block; content: '';
+	position: absolute; bottom: 0; left: 0;
+	width: 100%; height: .25rem;
+	background-color: white;
+	transform: scaleY(0);
+	transform-origin: bottom left;
+	transition: .15s ease-in-out all;
+
+	/* anti-aliasing hacks */
+	outline: 1px solid transparent !important;
+	backface-visibility: hidden;
+}
+
+/* Style the currently active link */
+{% if active_tab %}
+header:not(:hover) .nav-item[href^="{{ active_tab }}"]::after {
+	transform: scaleY(1);
+	opacity: .7;
+}
+{% endif %}
+
+a.nav-item:hover, a.nav-item:focus { text-decoration: none; color: inherit; }
+a.nav-item:hover::after, a.nav-item:focus::after { transform: scaleY(1); opacity: 1; }
+
+.centrifuge-brand { font-size: 2em; color: #ff6000; position: relative; top: -.1em; display: flex; }
+.centrifuge-brand::before {
+	content: '';
+	display: block;
+	height: 1.5em; width: 1.5em; /* Same height as parent, width for square */
+	margin-right: .15em;
+	position: relative; top: .075em;
+	background-image: url('{%  static 'favicon.png' %}');
+	background-size: contain; background-repeat: no-repeat;
+}
 
 </style>

@@ -2,10 +2,15 @@
 
 {% block content %}
 
-<h1>Autoriser une application</h1>
-<p>Application : <strong>{{ app.name }}</strong></p>
-<p>Souhaitez-vous autoriser cette application ?</p>
-<p><form action="" method="POST">{% csrf_token %}<a class="btn btn-block btn-primary">Autoriser</a></form></p>
-<p><a class="btn btn-block btn-default" href="/">Annuler</a></p>
+<h1>Nouvelle application</h1>
+<p>Souhaitez-vous vous connecter à cette application via Centrifuge ?</p>
+
+{% include 'auth_network_provider/app.html' %}
+
+<form action="" method="POST">{% csrf_token %}
+	<p><button class="btn btn-block btn-primary">Autoriser</button></p>
+</form>
+
+<p><button class="btn btn-block btn-secondary" href="/">Annuler</button></p>
 
 {% endblock %}

@@ -23,7 +23,6 @@ INSTALLED_APPS = [
 ]
 
 INSTALLED_APPS += ['auth_network_provider',]
-AUTH_USER_MODEL = 'auth_network_provider.User'
 AUTHENTICATION_BACKENDS = [
 	'auth_network_provider.backends.UserModelEmailBackend',    # Login w/ email
 ]

@@ -7,15 +7,22 @@ APP_SECRET = r'(?P<app_secret>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0
 USER_UUID = r'(?P<user_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})' # UUID
 
 urlpatterns = [
-	url(r'^$', views.Home, name='network_auth_home'),
-	url(r'^identify/{}/$'.format(APP_KEY), views.Identify, name='network_auth_identify'),
-	url(r'^register/', include([
-		url(r'^$', views.Register.as_view(), name='registration_register'),
-		url(r'^{}/$'.format(APP_KEY), views.RegisterForApp.as_view(), name='network_auth_register_for_app'),
+	url(r'^$', views.Home, name='auth_network_home'),
+	url(r'^login/', include([
+		url(r'^$', views.Login.as_view(), name='auth_network_login'),
+		url(r'{}/'.format(APP_KEY), views.Login.as_view(), name='auth_network_login'),
 	])),
+	url(r'^register/', include([
+		url(r'^$', views.Register.as_view(), name='auth_network_register'),
+		url(r'{}/'.format(APP_KEY), views.Register.as_view(), name='auth_network_register'),
+	])),
+	url(r'^account/$', views.UserInfo, name='auth_network_user_info'),
+	url(r'^identify/{}/'.format(APP_KEY), views.Identify, name='auth_network_identify'),
 	url(r'^get-details/{APP_KEY}/{APP_SECRET}/{USER_UUID}/$'.format(
 		APP_KEY = APP_KEY,
 		APP_SECRET = APP_SECRET,
 		USER_UUID = USER_UUID,
-		), views.GetDetails, name='network_auth_get_details'),
+		), views.GetDetails, name='auth_network_get_details'
+	),
 ]
+

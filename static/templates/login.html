@@ -1,0 +1,11 @@
+{% extends "form.html" %}
+{% load bootstrap3 %}
+
+{% block content %}{{ block.super }}
+
+<p style="text-align: center; margin-top: 2rem;">
+<a href="{% url 'auth_network_register' app_key %}">Pas encore de compte ?</a><br/>
+<a href="{% url 'password_reset' %}">Mot de passe oublié ?</a>
+</p>
+
+{% endblock %}

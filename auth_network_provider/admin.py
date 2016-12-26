@@ -12,13 +12,18 @@ class AppAdmin(admin.ModelAdmin):
 admin.site.register(App, AppAdmin)
 
 
+class CredentialsInline(admin.TabularInline):
+	model = Credentials
+	readonly_fields = ( "app", "user_has_authorized", "token", )
+	extra = 0
 
-class UserAdmin(admin.ModelAdmin):
-	model = User
-	readonly_fields = ( "uuid", "password", "last_login", "date_joined", )
-	list_display = ("username", "email", "number_of_apps")
+class NetworkUserAdmin(admin.ModelAdmin):
+	model = NetworkUser
+	readonly_fields = ("user", "uuid", )
+	list_display = ("user", "number_of_apps",)
+	inlines = [CredentialsInline, ]
 
-admin.site.register(User, UserAdmin)
+admin.site.register(NetworkUser, NetworkUserAdmin)
 
 
 

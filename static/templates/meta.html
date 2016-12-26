@@ -1,4 +1,4 @@
-{% load static %}
+{% load staticfiles %}
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -10,9 +10,9 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.5/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css">
-	<link rel="shortcut icon" href="{% get_static_prefix %}images/favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="{%  static 'favicon.png' %}">
 
-	<title>{% block title %}{% endblock title %}Centrifuge</title>
+	<title>{% if page_title %}{{ page_title }} - {% endif %}Centrifuge</title>
 
 	{% block head %}{% endblock head %}
 
@@ -24,17 +24,33 @@
 	{% block header %}{% endblock header %}
 </header>
 
-<div id="main-container" class="container main-container" >
-	{% block messages %}{% if messages %}<div class="col-sm-12">{% include "messages.html" %}</div>{% endif %}{% endblock messages %}
-	<div class=" col-xs-12 col-sm-10 col-md-8 col-lg-6" style="margin:auto; float: none;">
-		{% block content %}{% endblock content %}
-	</div>
+<div id="main-container" >
+	{% block messages %}{% if messages %}<div>{% include "messages.html" %}</div>{% endif %}{% endblock messages %}
+	{% block content %}{% endblock content %}
 </div>
 
 <footer class="endpage">
 	{% block footer %}{% endblock footer %}
 </footer>	
 
+<style>
+	
+	body {
+		font-family: "Helvetica Neue", "Trebuchet MS", Roboto, sans-serif; 
+		/* Helvetica Neue for Mac and iPhone, Calibri Light for Windows, Roboto for Android */
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		letter-spacing: 0.02em;
+	}
+
+	#main-container {
+		margin: 1rem auto;
+		line-height: 1.625; /* golden ratio for our main content column, with line-height and max-width */
+		max-width: 44.8125rem; /* 42.8125 + 2rem for the padding on both sides */
+		padding: 0 1rem;
+	} 
+
+</style>
 	
 {% block scripts %}
 

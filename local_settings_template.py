@@ -1,4 +1,4 @@
-SITE_URL = "localhost:8007" # use http:// in production
+SITE_URL = "localhost" # use http:// in production
 ALLOWED_HOSTS = [SITE_URL, ]
 SECRET_KEY = 'many_potatoes'
 DEBUG = True
