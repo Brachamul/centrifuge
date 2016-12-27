@@ -1,24 +1,26 @@
 {% load staticfiles %}
 
-<a class="nav-item" href='/'>
-	<span class="centrifuge-brand">centrifuge</span>
-</a>
+<nav id="main-nav" role="navigation">
 
-{% if user.is_authenticated %}
-	<a class="nav-item" href="{% url 'auth_network_user_info' %}">{{ user.username }}</a>
-	{% if user.is_staff %}
-		<a class="nav-item" href="{% url 'admin:index' %}">Administration</a>
+	<a class="nav-item" href='/'>
+		<span class="centrifuge-brand">centrifuge</span>
+	</a>
+	
+	{% if user.is_authenticated %}
+		<a class="nav-item" href="{% url 'auth_network_user_info' %}">{{ user.username }}</a>
+		{% if user.is_staff %}
+			<a class="nav-item" href="{% url 'admin:index' %}">Administration</a>
+		{% endif %}
+		<a class="nav-item" href="{% url 'logout' %}">Déconnexion</a>
+	{% else %}
+		<a class="nav-item" href="{% url 'auth_network_login' %}">Connexion</a>
 	{% endif %}
-	<a class="nav-item" href="{% url 'logout' %}">Déconnexion</a>
-{% else %}
-	<a class="nav-item" href="{% url 'auth_network_login' %}">Connexion</a>
-{% endif %}
 
-
+</nav>
 
 <style>
 
-#centrifuge header {
+#main-nav {
 	background-color: #222; color: white;
 	height: 5rem ; /* 80px */
 	margin-bottom: 2rem; padding: 0 .5rem;
