@@ -1,1 +1,46 @@
-<h3>{{ app.name }}</h3>
+<div class="_card _card_block">
+	<div class="app_illustration" style="background-image: url('{{ app.illustration }}')"></div>
+	<div class="app_name">{{ app.name }}</div>
+	<div class="app_description"><span>{{ app.description }}</span></div>
+</div>
+
+<style>
+
+	._card {
+		margin: 1rem;
+		padding: .5rem;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		display: flex;
+		align-items: center;
+	}
+
+	._card > * {
+		margin: .5rem;
+	}
+
+	._card_block {
+		margin: 1rem 0;
+	}
+
+	.app_name {
+		font-size: 2rem;
+		line-height: 1;
+	}
+
+	.app_illustration {
+		display: inline-block;
+		min-width: 2rem;
+		min-height: 2rem;
+		background-size: contain;
+		background-repeat: no-repeat;
+	}
+
+	.app_description {
+		line-height: 1rem;
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+	}
+
+</style>

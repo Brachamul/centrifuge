@@ -9,7 +9,9 @@ from django.utils.translation import gettext as _
 class App(models.Model):
 
 	key = models.UUIDField(primary_key=True, max_length=32, default=uuid.uuid4, editable=False)
-	name = models.CharField(max_length=255)
+	name = models.CharField(max_length=48)
+	description = models.CharField(max_length=144)
+	illustration = models.URLField(max_length=500)
 	trusted = models.BooleanField(default=False) # a trusted app does not need to be authorized by the user
 	secret = models.CharField(max_length=32, default=uuid.uuid4, editable=False)
 	set_token_url = models.CharField(max_length=5000, help_text='eg: http://localhost:8008/auth/set-token/')

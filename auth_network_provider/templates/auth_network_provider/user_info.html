@@ -6,7 +6,7 @@
 <hr/>
 
 <h2>Applications</h2>
-{% for app in user.network_user.apps %}
+{% for app in user.network_user__apps %}
 	{% include 'auth_network_provider/app.html' %}
 {% endfor %}
 

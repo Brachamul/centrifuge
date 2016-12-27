@@ -20,6 +20,8 @@ logger = logging.getLogger(__name__)
 
 
 def Home(request):
+	print('=============')
+	print('home is requested')
 	if request.user.is_authenticated() :
 		return redirect('auth_network_user_info')
 	else :
@@ -111,16 +113,21 @@ def GetDetails(request, app_key, app_secret, user_uuid):
 class Login(FormView):
 
 	''' C'est la vue qui permet aux utilisateurs de créer un compte '''
+	# TODO merge login with register as AuthView
 
 	form_class = EmailAuthenticationForm
-	template_name = "login.html" # An extension of form.html
+	template_name = "auth_network_provider/auth_login.html" # An extension of form.html
 
 	def dispatch(self, request, *args, **kwargs):
+		
 		# Si l'utilisateur est déjà connecté, on le redirige
 		# Soit vers la suite du parcours d'identification, soit vers l'accueil
+		
+		app_key = self.kwargs.get('app_key', False)		
+
 		if request.user.is_authenticated() :
-			if self.kwargs.get('app_key', False):
-				return redirect('auth_network_identify', self.kwargs.get('app_key', False))
+			if app_key:
+				return redirect('auth_network_identify', app_key=app_key)
 			else :
 				messages.info(request, _('Vous êtes déjà connecté.'))
 				return redirect('auth_network_home')
@@ -137,16 +144,22 @@ class Login(FormView):
 		return super(Login, self).form_valid(form)
 
 	def get_success_url(self):
-		if self.kwargs.get('app_key', False):
-			return redirect('auth_network_identify', app_key=self.kwargs['app_key'])
+		app_key = self.kwargs.get('app_key', False)
+		if app_key :
+			return reverse('auth_network_identify', app_key=app_key)
 		else :
-			return redirect('auth_network_home')
+			return reverse('auth_network_home')
 
 	def get_context_data(self, **kwargs):
+		app_key = self.kwargs.get('app_key', False)
+		if app_key :
+			app = App.objects.get(key=app_key)
+		else :
+			app = False
 		context = super(Login, self).get_context_data(**kwargs)
 		context['page_title'] = 'Connexion'
 		context['submit_button_text'] = 'Se connecter'
-		context['app_key'] = self.kwargs.get('app_key', False)
+		context['app'] = app
 		context['active_tab'] = reverse('auth_network_login')
 		return context
 
@@ -156,7 +169,7 @@ class Register(FormView):
 
 	''' C'est la vue qui permet aux utilisateurs de créer un compte '''
 	form_class = UserCreationForm
-	template_name = "form.html"
+	template_name = "auth_network_provider/auth_register.html"
 	
 	def dispatch(self, request, *args, **kwargs):
 		# Si l'utilisateur est déjà connecté, on ne lui propose pas de créer un compte
@@ -182,16 +195,22 @@ class Register(FormView):
 		return super(Register, self).form_valid(form)
 
 	def get_success_url(self):
-		if self.kwargs.get('app_key', False):
-			return redirect('auth_network_identify', app_key=self.kwargs['app_key'])
+		app_key = self.kwargs.get('app_key', False)
+		if app_key :
+			return reverse('auth_network_identify', app_key=app_key)
 		else :
-			return redirect('auth_network_home')
+			return reverse('auth_network_home')
 
 	def get_context_data(self, **kwargs):
+		app_key = self.kwargs.get('app_key', False)
+		if app_key :
+			app = App.objects.get(key=app_key)
+		else :
+			app = False
 		context = super(Register, self).get_context_data(**kwargs)
 		context['page_title'] = 'Créer un compte'
 		context['submit_button_text'] = 'Créer'
-		context['app_key'] = self.kwargs.get('app_key', False)
+		context['app'] = app # used to display app info
 		context['active_tab'] = reverse('auth_network_register')
 		return context
 
