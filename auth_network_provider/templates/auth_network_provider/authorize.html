@@ -7,6 +7,8 @@
 
 {% include 'auth_network_provider/app.html' %}
 
+<p>Informations demandées : <strong>Email</strong>, <strong>Prénom</strong> et <strong>Nom</strong>.</p>
+
 <form action="" method="POST">{% csrf_token %}
 	<p><button class="btn btn-block btn-primary">Autoriser</button></p>
 </form>

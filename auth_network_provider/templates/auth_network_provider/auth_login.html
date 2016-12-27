@@ -3,11 +3,12 @@
 
 {% block before_the_form %}
 
-	<p>Cette application souhaite accéder à vos informations personnelles :</p>
 	{% if app %}
 		{% include 'auth_network_provider/app.html' %}
 	{% endif %}
-	<p>Informations demandées : <strong>Email</strong>, <strong>Prénom</strong> et <strong>Nom</strong>.</p>
+	<p>Pour autoriser l'application, vous devez d'abord vous authentifier :</p>
+
+	<hr/>
 
 {% endblock %}
 

@@ -1,5 +1,5 @@
-import os
-import uuid
+import os, uuid
+from datetime import datetime, timedelta
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -29,10 +29,19 @@ class NetworkUser(models.Model):
 	user = models.OneToOneField(User, related_name='network_user') # see signals.py for NetworkUser creation
 	uuid = models.UUIDField(max_length=32, default=uuid.uuid4)
 	apps = models.ManyToManyField(App, through='Credentials')
+	last_verification = models.DateTimeField(default=datetime.now)
 
 	def number_of_apps(self):
 		return self.apps.count()
-	
+
+	def mark_verification(self):
+		self.last_verification = datetime.now()
+		self.save()
+
+	def check_verification(self):
+		# checks that the last verification occured less that 30 seconds ago
+		return self.last_verification + timedelta(seconds=30) > datetime.now()
+
 	class Meta(object):
 		verbose_name = _('membre du réseau')
 		verbose_name_plural = _('membres du réseau')
@@ -49,10 +58,12 @@ class Credentials(models.Model):
 	network_user = models.ForeignKey(NetworkUser, on_delete=models.CASCADE)
 	user_has_authorized = models.BooleanField(default=False)
 	token = models.CharField(max_length=32, default=uuid.uuid4)
+	last_token_refresh = models.DateTimeField(default=datetime.now)
 	date_joined = models.DateField(auto_now_add=True)
 
 	def refresh_token(self):
 		self.token = uuid.uuid4()
+		self.last_token_refresh = datetime.now()
 		self.save()
 
 	class Meta(object):
