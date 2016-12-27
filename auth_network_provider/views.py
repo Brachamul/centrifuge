@@ -277,3 +277,11 @@ def GetDetails(request, app_key, app_secret, user_uuid):
 		'first_name': user.first_name,
 		'last_name': user.last_name
 		})
+
+
+
+def CSSTest(request):
+
+	''' Used to test CSS stylesheet '''
+
+	return render(request, '_css_test.html')
