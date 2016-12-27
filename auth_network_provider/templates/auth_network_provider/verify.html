@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% include 'auth_network_provider/app.html' %}
+
+<p>Souhaitez-vous continuer en tant que <strong>{{ user.username }}</strong> ?</p>
+
+<form action="" method="POST">{% csrf_token %}
+	<p><button class="btn btn-block btn-primary">Continuer</button></p>
+</form>
+
+<p><a class="btn btn-block btn-secondary" href="{% url 'auth_network_use_another_account' app.key %}">Utiliser un autre compte</a></p>
+
+{% endblock %}

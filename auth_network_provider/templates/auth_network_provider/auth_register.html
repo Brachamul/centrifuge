@@ -1,0 +1,26 @@
+{% extends "form.html" %}
+{% load bootstrap3 %}
+
+{% block before_the_form %}
+
+	{% if app %}
+		{% include 'auth_network_provider/app.html' %}
+	{% endif %}
+	<p>Pour autoriser l'application, vous devez d'abord disposer d'un compte <strong>Centrifuge</strong>.</p>
+	<p>C'est la solution unique pour vous connecter aux sites et applications centristes !</p>
+
+	<hr/>
+
+{% endblock %}
+
+{% block after_the_form %}
+
+	<p style="text-align: center; margin-top: 2rem;">
+		{% if app %}
+			<a href="{% url 'auth_network_login' app.key %}">Vous avez déjà un compte ?</a><br/>
+		{% else %}
+			<a href="{% url 'auth_network_login' %}">Vous avez déjà un compte ?</a><br/>
+		{% endif %}
+	</p>
+
+{% endblock %}

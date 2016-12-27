@@ -2,11 +2,6 @@
 {% load static %}
 
 
-
-{% if page_title %}{% block title %}{{ page_title }} - {% endblock title %}{% endif %}
-
-
-
 {% block head %}{{ block.super }}
 
 {% endblock head %}
@@ -14,6 +9,8 @@
 
 
 {% block header %}
+
+	{% include "header.html" %}
 
 {% endblock header %}
 
