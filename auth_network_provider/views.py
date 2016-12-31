@@ -173,7 +173,9 @@ class Login(FormView):
 			username=self.request.POST.get('username'),
 			password=self.request.POST.get('password')
 		)
-		if user is not None : login(self.request, user)
+		if user is not None :
+			login(self.request, user)
+			user.network_user.mark_verification()
 		return super(Login, self).form_valid(form)
 
 	def get_success_url(self):

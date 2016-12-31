@@ -5,10 +5,9 @@
 
 	{% if app %}
 		{% include 'auth_network_provider/app.html' %}
+		<p>Pour vous connecter à cette application, vous devez d'abord vous authentifier :</p>
+		<hr/>
 	{% endif %}
-	<p>Pour autoriser l'application, vous devez d'abord vous authentifier :</p>
-
-	<hr/>
 
 {% endblock %}
 
@@ -16,11 +15,11 @@
 
 	<p style="text-align: center; margin-top: 2rem;">
 		{% if app %}
-			<a href="{% url 'auth_network_register' app.key %}">Pas encore de compte ?</a><br/>
+			<a class="secondary-link" href="{% url 'auth_network_register' app.key %}">Pas encore de compte ?</a><br/>
 		{% else %}
-			<a href="{% url 'auth_network_register' %}">Pas encore de compte ?</a><br/>
+			<a class="secondary-link" href="{% url 'auth_network_register' %}">Pas encore de compte ?</a><br/>
 		{% endif %}
-		<a href="{% url 'password_reset' %}">Mot de passe oublié ?</a>
+		<a class="secondary-link" href="{% url 'password_reset' %}">Mot de passe oublié ?</a>
 	</p>
 
 {% endblock %}

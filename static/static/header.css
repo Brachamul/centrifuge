@@ -1,0 +1,124 @@
+#main-nav {
+	background-color: #222; color: white;
+	height: 5rem ; /* 80px */
+	margin-bottom: 2rem;
+	display: flex; flex-flow: row wrap;
+	box-shadow:
+		0 1px 3px rgba(0,0,0,0.12),
+		0 1px 2px rgba(0,0,0,0.24);
+}
+
+.nav-item {
+	display: block; position: relative; 
+	padding: 1rem; height: 100%; line-height: 3rem;
+	text-decoration: none;
+	color: inherit;
+}
+
+.nav-item::after {
+	display: block; content: '';
+	position: absolute; bottom: 0; left: 0;
+	width: 100%; height: .25rem;
+	background-color: white;
+	transform: scaleY(0);
+	transform-origin: bottom left;
+	transition: .15s ease-in-out all;
+
+	/* anti-aliasing hacks */
+	outline: 1px solid transparent !important;
+	backface-visibility: hidden;
+}
+
+/* Override standard anchor properties */
+a.nav-item:link,
+a.nav-item:visited { color: inherit; }
+a.nav-item:hover { border-bottom-width: 0; }
+a.nav-item:active { border-bottom-width: 0; }
+
+/* Note that there is a dynamic CSS rule to display the currently active tab inside the Django template file */
+
+a.nav-item:hover, a.nav-item:focus { text-decoration: none; color: inherit; }
+a.nav-item:hover::after, a.nav-item:focus::after { transform: scaleY(1); opacity: 1; }
+
+.centrifuge-brand {
+	font-size: 2em;
+	color: #ff6000;
+	position: relative;
+	top: -.05em;
+	display: flex;
+}
+
+.centrifuge-brand::before {
+	content: '';
+	display: block;
+	height: 1.5em; width: 1.5em; /* Same height as parent, width for square */
+	margin-right: .15em;
+	position: relative; top: .075em;
+	background-image: url('favicon.png');
+	background-size: contain; background-repeat: no-repeat;
+}
+
+@media ( max-width: 717px ) {
+
+	#menu-wrapper {
+		display: block;
+		position: absolute;
+		top: 5rem; left: 0;
+		width: 100%;
+		background-color: inherit;
+		box-shadow: inherit;
+		transition: .25s ease-in-out transform;
+		transform-origin: top;
+		transform: scaleY(0);
+	}
+
+	#menu-drawer:target + #menu-wrapper {
+		transform: scaleY(1);
+	}
+
+	#menu-wrapper .nav-item { 
+		height: auto; padding-left: 2rem;
+		border-top: 1px solid rgba(255,255,255,0.2);
+	}
+
+	a.nav-item::after {
+		width: .5rem;
+		height: 100%;
+		transform: translateX(-.5rem);
+		transition: .15s ease-in-out all;
+		transform-origin: bottom left;
+	}
+
+	a.nav-item:hover::after,
+	a.nav-item:focus::after {
+		transform: translateX(0);
+	}
+
+	#menu-drawer {
+		position: absolute;
+		opacity: .8;
+		right: 0;
+		height: 5rem;
+		width: 4rem;
+	}
+
+	#menu-drawer:target #menu-open { visibility: hidden; opacity: 0; }
+	#menu-drawer:not(:target) #menu-close { visibility: hidden; opacity: 0; }
+
+	#menu-open, #menu-close {
+		position: absolute;
+		content: '';
+		display: block;
+		height: 100%; width: 100%;
+		opacity: 1;
+		transition: .5s ease-in-out all;
+		background-size: 2.5rem;
+		background-position: center;
+		background-repeat: no-repeat;
+		border-bottom-width: 0 !important;
+	}	
+
+	#menu-open { background-image: url('menu.png'); }
+	#menu-close { background-image: url('cancel.png') }
+
+}
