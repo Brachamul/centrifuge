@@ -64,17 +64,22 @@ def Identify(request, app_key):
 		new_token = str(uuid.uuid4()) # Generate the password token
 		try :
 			# On the client app, set the user's password to the newly generated token
-			requests.post("{set_token_url}{network_user_uuid}/{new_token}/{secret}/".format(
+			set_token = requests.post("{set_token_url}{network_user_uuid}/{new_token}/{secret}/".format(
 				set_token_url = app.set_token_url,
 				network_user_uuid = str(user.network_user.uuid),
 				new_token = new_token,
 				secret = app.secret,
 				))
-		except requests.exceptions.RequestException :
+			set_token.raise_for_status()
+		except requests.exceptions.RequestException as e :
 			# The request to set a new token on the client app has failed
-			messages.error(_(
-				"Une erreur est survenue lorsque nous avons tenté de contacter l'application {}."
-				.format(app.name)))
+			messages.error(request, _(
+				"Une erreur est survenue lorsque nous avons tenté de vous authentifier à l'application {}. [{} : {}]"
+				.format(
+					app.name,
+					str(e.response.status_code),
+					str(e.response.reason))
+				))
 			return redirect('auth_network_home')
 		else :
 			# The request to set a new token on the client app has succeeded !

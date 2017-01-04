@@ -58,6 +58,8 @@ a.nav-item:hover::after, a.nav-item:focus::after { transform: scaleY(1); opacity
 	background-size: contain; background-repeat: no-repeat;
 }
 
+#menu-wrapper { display: flex; }
+
 @media ( max-width: 717px ) {
 
 	#menu-wrapper {
