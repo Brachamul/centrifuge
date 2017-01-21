@@ -6,8 +6,7 @@ from .models import *
 
 class AppAdmin(admin.ModelAdmin):
 	model = App
-	readonly_fields = ( "key", "secret", )
-	list_display = ("name", "trusted", "set_token_url", "callback_url", )
+	list_display = ("name", "trusted", "callback_url", "key", "secret")
 
 admin.site.register(App, AppAdmin)
 

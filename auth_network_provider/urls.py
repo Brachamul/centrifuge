@@ -26,5 +26,6 @@ urlpatterns = [
 		USER_UUID = USER_UUID,
 		), views.GetDetails, name='auth_network_get_details'
 	),
+	url(r'^css-test/$', views.CSSTest),
 ]
 

@@ -3,16 +3,16 @@
 {% block content %}
 
 <h1>Nouvelle application</h1>
-<p>Souhaitez-vous vous connecter à cette application via Centrifuge ?</p>
+<p>Souhaitez-vous autoriser cette application à vous identifier via Centrifuge ?</p>
 
 {% include 'auth_network_provider/app.html' %}
 
 <p>Informations demandées : <strong>Email</strong>, <strong>Prénom</strong> et <strong>Nom</strong>.</p>
 
 <form action="" method="POST">{% csrf_token %}
-	<p><button class="btn btn-block btn-primary">Autoriser</button></p>
+	<p><button class="pure-button pure-button-block pure-button-primary">Autoriser</button></p>
 </form>
 
-<p><button class="btn btn-block btn-secondary" href="/">Annuler</button></p>
+<p><button class="pure-button pure-button-block pure-button-secondary" href="/">Annuler</button></p>
 
 {% endblock %}

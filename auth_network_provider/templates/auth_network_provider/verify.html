@@ -7,9 +7,9 @@
 <p>Souhaitez-vous continuer en tant que <strong>{{ user.username }}</strong> ?</p>
 
 <form action="" method="POST">{% csrf_token %}
-	<p><button class="btn btn-block btn-primary">Continuer</button></p>
+	<p><button class="pure-button pure-button-block pure-button-primary">Continuer</button></p>
 </form>
 
-<p><a class="btn btn-block btn-secondary" href="{% url 'auth_network_use_another_account' app.key %}">Utiliser un autre compte</a></p>
+<p><a class="pure-button pure-button-block pure-button-secondary" href="{% url 'auth_network_use_another_account' app.key %}">Utiliser un autre compte</a></p>
 
 {% endblock %}

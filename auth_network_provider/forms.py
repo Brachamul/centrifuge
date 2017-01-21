@@ -15,18 +15,21 @@ class UserCreationForm(forms.ModelForm):
 	"""
 	error_messages = {
 		'password_mismatch': _("The two password fields didn't match."),
+		'email_already_taken': _("Cette adresse électronique est déjà enregistrée."),
 	}
 
-	first_name = forms.CharField(label=_("First Name"))
-	last_name = forms.CharField(label=_("Last Name"))
+	password1 = forms.CharField(
+		label=_("Password"),
+		strip=False,
+		widget=forms.PasswordInput(),
+		)
 
-	password1 = forms.CharField(label=_("Password"),
+	password2 = forms.CharField(
+		label=_("Password confirmation"),
 		strip=False,
-		widget=forms.PasswordInput)
-	password2 = forms.CharField(label=_("Password confirmation"),
-		widget=forms.PasswordInput,
-		strip=False,
-		help_text=_("Enter the same password as before, for verification."))
+		widget=forms.PasswordInput(),
+		help_text=_("Enter the same password as before, for verification.")
+		)
 
 	class Meta:
 		model = User
@@ -44,6 +47,17 @@ class UserCreationForm(forms.ModelForm):
 		self.instance.username = self.cleaned_data.get('username')
 		password_validation.validate_password(self.cleaned_data.get('password2'), self.instance)
 		return password2
+
+	def clean_email(self):
+		email = self.cleaned_data.get("email")
+		if User.objects.filter(email=email).count() > 0 :
+			raise forms.ValidationError(
+				self.error_messages['email_already_taken'],
+				code='email_already_taken',
+			)
+		password_validation.validate_password(self.cleaned_data.get('password2'), self.instance)
+		return email
+
 
 	def save(self, commit=True):
 		user = super(UserCreationForm, self).save(commit=False)
@@ -68,4 +82,7 @@ class EmailAuthenticationForm(AuthenticationForm):
 
 	def __init__(self, *args, **kwargs):
 		super(EmailAuthenticationForm, self).__init__(*args, **kwargs)
-		self.fields['username'] = forms.EmailField(label=_("Email"), max_length=254)
+		self.fields['username'] = forms.EmailField(
+			label=_("Email"),
+			max_length=254,
+			)
