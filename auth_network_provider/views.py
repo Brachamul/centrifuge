@@ -62,7 +62,7 @@ def Identify(request, app_key):
 
 		# Checks complete, we can proceed to authenticate the user to the client app
 		new_token = str(uuid.uuid4()) # Generate the password token
-		prin('GOING TO ATTEMPT SETTING TOKEN...')
+		print('GOING TO ATTEMPT SETTING TOKEN...')
 		try :
 			# On the client app, set the user's password to the newly generated token
 			print('ATTEMPTING TO SET TOKEN')
