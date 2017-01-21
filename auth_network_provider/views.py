@@ -66,12 +66,14 @@ def Identify(request, app_key):
 		try :
 			# On the client app, set the user's password to the newly generated token
 			print('ATTEMPTING TO SET TOKEN')
-			set_token = requests.post("{set_token_url}{network_user_uuid}/{new_token}/{secret}/".format(
+			full_url = "{set_token_url}{network_user_uuid}/{new_token}/{secret}/".format(
 				set_token_url = app.set_token_url,
 				network_user_uuid = str(user.network_user.uuid),
 				new_token = new_token,
 				secret = app.secret,
-				))
+				)
+			set_token = requests.post(full_url)
+			print('CALLING URL : ' + full_url)
 			set_token.raise_for_status()
 		except requests.exceptions.RequestException as e :
 			print('COULD NOT SET TOKEN')
