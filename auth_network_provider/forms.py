@@ -55,7 +55,6 @@ class UserCreationForm(forms.ModelForm):
 				self.error_messages['email_already_taken'],
 				code='email_already_taken',
 			)
-		password_validation.validate_password(self.cleaned_data.get('password2'), self.instance)
 		return email
 
 

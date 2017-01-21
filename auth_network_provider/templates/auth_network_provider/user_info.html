@@ -9,5 +9,8 @@
 {% for app in user.network_user__apps %}
 	{% include 'auth_network_provider/app.html' %}
 {% endfor %}
+{% if not user.network_user__apps %}
+<p>Vous n'avez pas encore d'applications connectées à Centrifuge.</p>
+{% endif %}
 
 {% endblock %}
