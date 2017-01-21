@@ -285,6 +285,7 @@ def GetDetails(request, app_key, app_secret, user_uuid):
 	''' This view is called by the app when it needs the
 	user's details in order to create or update an account. '''
 
+	print('APP IS ASKING FOR DETAILS')
 	app = get_object_or_404(App, key=app_key, secret=app_secret) # identifie l'appli grâce à l'URL
 	network_user = get_object_or_404(NetworkUser, uuid=user_uuid)
 	user = network_user.user
