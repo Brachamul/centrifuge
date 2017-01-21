@@ -108,6 +108,7 @@ def VerifyUser(request, app_key):
 	return render(request, 'auth_network_provider/verify.html', {
 		'app': app,
 		'page_title': "Continuer en tant que {} ?".format(request.user.username),
+		'active_tab': False, 
 		} )
 
 
@@ -123,6 +124,7 @@ def AskUserToAllowApp(request, app):
 	return render(request, 'auth_network_provider/authorize.html', {
 		'app': app,
 		'page_title': "Nouvelle application",
+		'active_tab': False, 
 		} )
 
 
