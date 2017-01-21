@@ -72,8 +72,8 @@ def Identify(request, app_key):
 				new_token = new_token,
 				secret = app.secret,
 				)
-			set_token = requests.post(full_url)
 			print('CALLING URL : ' + full_url)
+			set_token = requests.post(full_url)
 			set_token.raise_for_status()
 		except requests.exceptions.RequestException as e :
 			print('COULD NOT SET TOKEN')
