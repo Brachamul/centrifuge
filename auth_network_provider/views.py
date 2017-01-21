@@ -27,7 +27,7 @@ def Home(request):
 	if request.user.is_authenticated() :
 		return redirect('auth_network_user_info')
 	else :
-		return render(request, 'auth_network_provider/home.html', { 'page_title': 'Accueil' })
+		return render(request, 'auth_network_provider/home.html', { 'page_title': 'Accueil', 'active_tab': False, })
 
 
 
