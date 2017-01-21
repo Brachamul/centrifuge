@@ -75,6 +75,8 @@ def Identify(request, app_key):
 			set_token.raise_for_status()
 		except requests.exceptions.RequestException as e :
 			print('COULD NOT SET TOKEN')
+			print(str(e.response.status_code))
+			print(str(e.response.reason))
 			# The request to set a new token on the client app has failed
 			messages.error(request, _(
 				"Une erreur est survenue lorsque nous avons tenté de vous authentifier à l'application {}. [{} : {}]"
