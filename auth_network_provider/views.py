@@ -1,5 +1,4 @@
-import logging
-import requests
+import logging, requests, json
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
@@ -62,23 +61,28 @@ def Identify(request, app_key):
 
 		# Checks complete, we can proceed to authenticate the user to the client app
 		new_token = str(uuid.uuid4()) # Generate the password token
-		print('GOING TO ATTEMPT SETTING TOKEN...')
+		print('NEW TOKEN : ', new_token)
 		try :
 			# On the client app, set the user's password to the newly generated token
-			print('ATTEMPTING TO SET TOKEN')
-			full_url = "{set_token_url}{network_user_uuid}/{new_token}/{secret}/".format(
+			set_token_endpoint = "{set_token_url}{network_user_uuid}/".format(
 				set_token_url = app.set_token_url,
 				network_user_uuid = str(user.network_user.uuid),
-				new_token = new_token,
-				secret = app.secret,
 				)
-			print('CALLING URL : ' + full_url)
-			set_token = requests.post(full_url)
+			set_token_data = {
+				'secret': app.secret,
+				'new_token': new_token,
+				'user_details' : json.dumps({
+					# Send the user data with the request, so that the user can be
+					# created if new or updated if it existed previously
+					'username': user.username,
+					'email': user.email,
+					'first_name': user.first_name,
+					'last_name': user.last_name
+					})
+				}
+			set_token = requests.post(set_token_endpoint, data=set_token_data)
 			set_token.raise_for_status()
 		except requests.exceptions.RequestException as e :
-			print('COULD NOT SET TOKEN')
-			print(str(e.response.status_code))
-			print(str(e.response.reason))
 			# The request to set a new token on the client app has failed
 			messages.error(request, _(
 				"Une erreur est survenue lorsque nous avons tenté de vous authentifier à l'application {}. [{} : {}]"
@@ -87,9 +91,8 @@ def Identify(request, app_key):
 					str(e.response.status_code),
 					str(e.response.reason))
 				))
-			return redirect('auth_network_home')
+			return redirect('auth_network_verify_user', app_key=app_key)
 		else :
-			print('TOKEN WAS SET, NOW REDIRECTING')
 			# The request to set a new token on the client app has succeeded !
 			# Proceed to authenticate on the client app using the callback_url
 			return redirect("{callback_url}{network_user_uuid}/{new_token}/".format(
