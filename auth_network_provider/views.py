@@ -66,14 +66,22 @@ def Identify(request, app_key):
 		try :
 			# On the client app, set the user's password to the newly generated token
 			print('ATTEMPTING TO SET TOKEN')
-			full_url = "{set_token_url}{network_user_uuid}/{new_token}/{secret}/".format(
+			set_token_endpoint = "{set_token_url}{network_user_uuid}/".format(
 				set_token_url = app.set_token_url,
 				network_user_uuid = str(user.network_user.uuid),
-				new_token = new_token,
-				secret = app.secret,
 				)
-			print('CALLING URL : ' + full_url)
-			set_token = requests.post(full_url)
+			set_token_data = {
+				'secret': app.secret,
+				'new_token': new_token,
+				'user_details' : {
+					'username': user.username,
+					'email': user.email,
+					'first_name': user.first_name,
+					'last_name': user.last_name
+					}
+				}
+			print('SET TOKEN DATA : ', set_token_data)
+			set_token = requests.post(set_token_endpoint, json=set_token_data)
 			set_token.raise_for_status()
 		except requests.exceptions.RequestException as e :
 			print('COULD NOT SET TOKEN')
@@ -87,7 +95,7 @@ def Identify(request, app_key):
 					str(e.response.status_code),
 					str(e.response.reason))
 				))
-			return redirect('auth_network_home')
+			return redirect('auth_network_verify_user', app_key=app_key)
 		else :
 			print('TOKEN WAS SET, NOW REDIRECTING')
 			# The request to set a new token on the client app has succeeded !
