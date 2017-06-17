@@ -61,7 +61,6 @@ def Identify(request, app_key):
 
 		# Checks complete, we can proceed to authenticate the user to the client app
 		new_token = str(uuid.uuid4()) # Generate the password token
-		print('NEW TOKEN : ', new_token)
 		try :
 			# On the client app, set the user's password to the newly generated token
 			set_token_endpoint = "{set_token_url}{network_user_uuid}/".format(
@@ -84,6 +83,7 @@ def Identify(request, app_key):
 			set_token.raise_for_status()
 		except requests.exceptions.RequestException as e :
 			# The request to set a new token on the client app has failed
+			# TODO : sometimes the error can raise no code, e.g. when target server is down
 			messages.error(request, _(
 				"Une erreur est survenue lorsque nous avons tenté de vous authentifier à l'application {}. [{} : {}]"
 				.format(
@@ -288,7 +288,6 @@ def GetDetails(request, app_key, app_secret, user_uuid):
 	''' This view is called by the app when it needs the
 	user's details in order to create or update an account. '''
 
-	print('APP IS ASKING FOR DETAILS')
 	app = get_object_or_404(App, key=app_key, secret=app_secret) # identifie l'appli grâce à l'URL
 	network_user = get_object_or_404(NetworkUser, uuid=user_uuid)
 	user = network_user.user
