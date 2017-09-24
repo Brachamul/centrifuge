@@ -1,7 +1,7 @@
 import logging, requests, json
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -61,7 +61,6 @@ def Identify(request, app_key):
 
 		# Checks complete, we can proceed to authenticate the user to the client app
 		new_token = str(uuid.uuid4()) # Generate the password token
-		print('NEW TOKEN : ', new_token)
 		try :
 			# On the client app, set the user's password to the newly generated token
 			set_token_endpoint = "{set_token_url}{network_user_uuid}/".format(
